@@ -1,15 +1,17 @@
 #!/usr/bin/sh
 #
-# download current days number of the day auto subs, 
+# Download subtitles for each video in vtt format
 set -exu
 
 PLAYLIST="https://youtube.com/playlist?list=PLTPQcjlcvvXFtR0R91Gh5j9Xi8cq0oN3Y"
 SAVE_PATH="auto_gen_subs"
+ARCHIVE_FILE="archive.log"
 
 yt-dlp \
     "${PLAYLIST}" \
     --skip-download \
     --write-auto-subs \
     --sub-format vtt \
-    --output "${SAVE_PATH}/%(upload_date>%Y-%m-%d)s.%(ext)s" \
-    --playlist-end 6
+    --sleep-requests 2 \
+    --sleep-subtitles 2 \
+    --output "${SAVE_PATH}/%(upload_date>%Y-%m-%d)s.%(ext)s"
