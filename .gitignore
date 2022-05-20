@@ -1,1 +1,5 @@
 auto_gen_subs
+__pycache__/
+.venv
+/static/
+db.sqlite3
