@@ -32,5 +32,5 @@ def get_numbers(request: WSGIRequest, **kwargs):
 
         cache.set(cache_key, json_numbers, None)
 
-    return JsonResponse(json_numbers)
+    return JsonResponse(json_numbers, status=200)
                         
