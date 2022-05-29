@@ -3,8 +3,9 @@ from django.db import models
 
 # Create your models here.
 class Number(models.Model):
-    date:date = models.DateField(primary_key=True)
-    number:int = models.PositiveSmallIntegerField()
+    date = models.DateField(primary_key=True)
+    number = models.PositiveSmallIntegerField()
+    url = models.URLField()
 
     class Meta:
         ordering = ['date']
