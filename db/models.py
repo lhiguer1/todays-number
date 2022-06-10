@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class Number(models.Model):
-    date = models.DateField(primary_key=True)
+    date = models.DateField()
     number = models.PositiveSmallIntegerField()
     url = models.URLField()
 
