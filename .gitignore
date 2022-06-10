@@ -1,5 +1,10 @@
-auto_gen_subs
+# python stuff
 __pycache__/
 .venv
+
+# django stuff
 /static/
 db.sqlite3
+
+# vids and subs
+db/data/
