@@ -17,7 +17,7 @@ class ChangeNamePP(PostProcessor):
             dt = datetime.strptime(match.group(), '%m/%d/%y')
             d = dt.date()
         except Exception as e:
-            raise PostProcessingError(f'Unable to add add title_key to infodict: {e}')
+            raise PostProcessingError(f'Unable to add title_key to infodict: {e}')
 
         return d
 
