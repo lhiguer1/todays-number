@@ -2,7 +2,6 @@
 from pathlib import Path
 from yt_dlp import YoutubeDL
 from postprocessors import (
-    AddTitleDateKeyPP,
     UpdateDatabasePP,
     ChangeNamePP,
     SaveInfoPP)
@@ -26,7 +25,6 @@ def update_database():
         }
 
     with YoutubeDL(ydl_opts) as ydl:
-        ydl.add_post_processor(AddTitleDateKeyPP())
         ydl.add_post_processor(ChangeNamePP())
         ydl.add_post_processor(UpdateDatabasePP())
         ydl.add_post_processor(SaveInfoPP())
