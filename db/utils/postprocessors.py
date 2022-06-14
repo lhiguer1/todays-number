@@ -28,7 +28,9 @@ class ChangeNamePP(PostProcessor):
             title_date = d.isoformat()
             old_file = Path(info['filepath']).resolve()
             new_file = old_file.rename(old_file.with_stem(f'{title_date}.{id}'))
+
             info['filepath'] = str(new_file)
+            info['title_date'] = title_date
         except Exception as e:
             raise PostProcessingError(f'Unable to change filename: {e}')
 
