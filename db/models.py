@@ -13,9 +13,6 @@ class Number(models.Model):
     def today(self):
         self.filter(date=date.today())
 
-    def to_json(self):
-        return {self.date.isoformat(): self.number}
-
     def __str__(self):
         return f'{self.date.isoformat()} / {self.number:02}'
 
