@@ -6,5 +6,5 @@ __pycache__/
 /static/
 db.sqlite3
 
-# vids and subs
-db/data/
+# scraped vids
+data/

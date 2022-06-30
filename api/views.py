@@ -27,7 +27,7 @@ def get_numbers(request: WSGIRequest, **kwargs):
     if day:
         numbers = numbers.filter(date__day=day)
     
-    values = list(numbers.values('date', 'number', 'url'))
+    values = list(numbers.values('date', 'number', 'urlid', 'transcript'))
 
     return JsonResponse({'numbers': values}, status=200)
                         

@@ -1,8 +1,7 @@
 import re
-import json
-from yt_dlp.utils import PostProcessingError
-from yt_dlp.postprocessor import PostProcessor
 from pathlib import Path
+from yt_dlp.postprocessor import PostProcessor
+from yt_dlp.utils import PostProcessingError
 from datetime import datetime
 
 class ChangeNamePP(PostProcessor):
@@ -35,24 +34,4 @@ class ChangeNamePP(PostProcessor):
             raise PostProcessingError(f'Unable to change filename: {e}')
 
         self.to_screen(f'`{old_file.name}` renamed to `{new_file.name}`')
-        return [], info
-
-class SaveInfoPP(PostProcessor):
-    """Save info to json file"""
-    def run(self, info:dict):
-        try:
-            file = Path(info['filepath']).resolve()
-            info_json = file.with_suffix('.json')
-            info_json.write_text(json.dumps(info))
-        except Exception as e:
-            raise PostProcessingError(f'Unable to save infodict for `{file.name}`: {e}')
-
-        self.to_screen(f'Information dict saved to `{file.name}`')
-        return [], info
-
-class UpdateDatabasePP(PostProcessor):
-    def run(self, info:dict):
-        # TODO: Actually process
-        file = Path(info['filepath']).resolve()
-        self.to_screen(f'`{file.name}` saved processed and db updated.')
         return [], info

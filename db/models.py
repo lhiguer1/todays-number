@@ -4,8 +4,9 @@ from django.db import models
 # Create your models here.
 class Number(models.Model):
     date = models.DateField()
-    number = models.PositiveSmallIntegerField()
-    url = models.URLField()
+    number = models.PositiveSmallIntegerField(null=True, blank=True)
+    urlid = models.URLField()
+    transcript = models.TextField()
 
     class Meta:
         ordering = ['date']
@@ -14,7 +15,7 @@ class Number(models.Model):
         self.filter(date=date.today())
 
     def __str__(self):
-        return f'{self.date.isoformat()} / {self.number:02}'
+        return self.date.isoformat()
 
     def __eq__(self, other):
         return self.date == other.date
