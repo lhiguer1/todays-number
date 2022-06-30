@@ -48,6 +48,7 @@ class Command(BaseCommand):
         
 
     def handle(self, *args, **options):
+        yturl = lambda id: f'https://youtu.be/{id}'
         files = DATA_PATH.glob('*.flac')
         succ_count = 0
         atmp_count = 0
@@ -60,7 +61,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.NOTICE(f'[--] Unable to process {f}: {e}.'))
                 continue
 
-            if Number.objects.filter(date=d, urlid=urlid).exists():
+            if Number.objects.filter(date=d, url=yturl(urlid)).exists():
                 self.stdout.write(f'[--] Number exists in database.')
                 continue
 
@@ -74,7 +75,7 @@ class Command(BaseCommand):
 
             number = self.get_number_from_transcript(transcript)
             
-            new_num = Number(date=d, number=number, urlid=urlid, transcript=transcript)
+            new_num = Number(date=d, number=number, url=yturl(urlid), transcript=transcript)
             new_num.save()
             succ_count += 1
             self.stdout.write(self.style.SUCCESS(f'[++] {d} added to database.'))

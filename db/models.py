@@ -5,7 +5,7 @@ from django.db import models
 class Number(models.Model):
     date = models.DateField()
     number = models.PositiveSmallIntegerField(null=True, blank=True)
-    urlid = models.URLField()
+    url = models.URLField()
     transcript = models.TextField()
 
     class Meta:
