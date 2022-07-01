@@ -1,4 +1,3 @@
-from datetime import date
 from django.db import models
 
 # Create your models here.
@@ -10,9 +9,6 @@ class Number(models.Model):
 
     class Meta:
         ordering = ['date']
-
-    def today(self):
-        self.filter(date=date.today())
 
     def __str__(self):
         return self.date.isoformat()
