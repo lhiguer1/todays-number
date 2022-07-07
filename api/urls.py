@@ -13,15 +13,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path, register_converter
-from . import views, converters
+from django.urls import re_path
+from . import views
 
-register_converter(converters.FourDigitYearConverter, 'yyyy')
-register_converter(converters.TwoDigitMonthConverter, 'mm')
-register_converter(converters.TwoDigitDayConverter, 'dd')
+
+year_pattern = r'(?P<year>20[2-9]\d)' # 2000-2099
+month_pattern = r'(?P<month>0[\d]|1[0-2])' # 01-12
+day_pattern = r'(?P<day>3[01]|0\d|[12]\d)' # 01-31
+date_pattern = r'^(?:{}/(?:{}/(?:{}/)?)?)?$'.format(year_pattern, month_pattern, day_pattern)
 
 urlpatterns = [
-    path('<yyyy:year>/<mm:month>/<dd:day>/', views.get_numbers),
-    path('<yyyy:year>/<mm:month>/', views.get_numbers),
-    path('<yyyy:year>/', views.get_numbers),
+    # Create
+
+    # Read
+    re_path(date_pattern, views.NumberListView.as_view(), name='number-list'),
+
+    # Update
+    # Delete
 ]

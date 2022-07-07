@@ -1,33 +1,24 @@
-from django.http import JsonResponse
-from django.core.handlers.wsgi import WSGIRequest
+from rest_framework import generics
+from rest_framework import permissions
 from db.models import Number
-from django.core.cache import cache
+from db.serializers import NumberSerializer
 
-# Create your views here.
-def make_key(year=None, month=None, day=None):
-    # key is isoformat string; YYYY-MM-DD or YYYY-MM or YYYY
-    key = f'{year:04d}'
-    if month is not None:
-        key += f'-{month:02d}'
-    if day is not None:
-        key += f'-{day:02d}'
+class NumberListView(generics.ListAPIView):
+    queryset = Number.objects.all()
+    serializer_class = NumberSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    return key
+    def get_queryset(self):
+        """
+        Return queryset filtered by specified date. Return all if none is provided.
+        """
+        filters = dict()
 
-def get_numbers(request: WSGIRequest, **kwargs):
-    """Return a JsonResponse object of the dates and numbers of the specified dates."""
-    year:int  = kwargs.get('year')
-    month:int = kwargs.get('month')
-    day:int   = kwargs.get('day')
+        for field in self.kwargs:
+            key = f'date__{field}'
+            filters[key] = self.kwargs[field]
 
-    # TODO: come back to cache
-    numbers = Number.objects.filter(date__year=year)
-    if month:
-        numbers = numbers.filter(date__month=month)
-    if day:
-        numbers = numbers.filter(date__day=day)
-    
-    values = list(numbers.values('date', 'number', 'url', 'transcript'))
+        queryset = self.queryset
+        queryset = queryset.filter(**filters)
 
-    return JsonResponse({'numbers': values}, status=200)
-                        
+        return queryset

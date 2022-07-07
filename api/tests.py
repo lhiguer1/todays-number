@@ -1,183 +1,93 @@
-from django.test import TransactionTestCase, SimpleTestCase
-from datetime import date, timedelta
-from calendar import monthrange
-from api.views import make_key
-from db.models import Number
+from django.urls import include, path, reverse
+from rest_framework.test import APITestCase
+from rest_framework.response import Response
+from rest_framework import status
 
-# Create your tests here.
-class APITests(TransactionTestCase):
-    phony_url = 'https://www.youtube.com/'
+from datetime import date, timedelta
+from db.models import Number
+from db.serializers import NumberSerializer
+
+class APIReadTests(APITestCase):
+    urlpatterns = [
+        path('', include('api.urls')),
+    ]
+
+    def get_expected_response(self, **kargs):
+        qs = Number.objects.filter(**kargs)
+        serializer = NumberSerializer(qs, many=True)
+        return list(serializer.data)
+
+
+
+    def assertResponseEqual(self, url:str, expected_response:list[dict]):
+        """Get response from `url` and compare to `expected_response."""
+        response:Response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertListEqual(response.json(), expected_response)
+
     def setUp(self):
-        """Crate dummy numbers from `start_date` to `end_date` with a number value of day-of-week"""
-        start_date = date(2022, 5, 1)
-        end_date   = date(2022, 6, 30)
+        """Create dummy database & target date"""
+        self.target_date = date(2020, 5, 15)
+        # 2020-05-15 -> 2021-05-15
+        start_date = date(self.target_date.year, self.target_date.month, self.target_date.day)
+        end_date = date(self.target_date.year+1, self.target_date.month, self.target_date.day)
         for i in range((end_date-start_date).days+1):
             target_date = start_date + timedelta(days=i)
-            Number.objects.create(date=target_date, number=target_date.day, url=self.phony_url)
+            Number.objects.create(date=target_date, number=target_date.day)
 
-    def test_year_month_day(self):
-        year  = 2022
-        month = 5
-        day   = 15
+    def test_day(self):
+        """
+        Test request for specific day.
+        """
+        url = reverse('number-list') + '{:04d}/{:02d}/{:02d}/'.format(self.target_date.year, self.target_date.month, self.target_date.day)
+        expected_response  = self.get_expected_response(date=self.target_date)
+        self.assertResponseEqual(url, expected_response)
 
-        # setup expected results
-        expected_status = 200
-        expected_results = {'numbers': []}
-        expected_results['numbers'].append(
-            {
-                'date': date(year,month,day).isoformat(),
-                'number': day,
-                'url': self.phony_url
-            }
-        )
+    def test_month(self):
+        """
+        Test request for specific month.
+        """
+        url = reverse('number-list') + '{:04d}/{:02d}/'.format(self.target_date.year, self.target_date.month)
+        expected_response = self.get_expected_response(date__year=self.target_date.year, date__month=self.target_date.month)
+        self.assertResponseEqual(url, expected_response)
 
-        # get results
-        response = self.client.get(f'/api/{year:04d}/{month:02d}/{day:02d}', follow=True)
+    def test_year(self):
+        """
+        Test request for specific year.
+        """
+        url = reverse('number-list') + '{:04d}/'.format(self.target_date.year)
+        expected_response = self.get_expected_response(date__year=self.target_date.year)
+        self.assertResponseEqual(url, expected_response)
 
-        self.assertEqual(expected_status, response.status_code)
-        self.assertDictEqual(expected_results, response.json())
+    def test_all_numbers(self):
+        """
+        Test URL without a path. Response should be all numbers.
+        """
+        url = reverse('number-list')
+        expected_response = self.get_expected_response()
+        self.assertResponseEqual(url, expected_response)
     
-    def test_year_month(self):
-        year  = 2022
-        month = 5
+    def test_date_boundaries(self):
+        """
+        Test valid dates from 2020 to 2099.
+        """
+        test_dates = {
+            # lower bound
+            date(2019,1,1): status.HTTP_404_NOT_FOUND,
+            date(2020,1,1): status.HTTP_200_OK,
 
-        # setup expected results
-        expected_status = 200
-        expected_results = {'numbers': []} # every day for given month
-        _, ndays = monthrange(year, month)
-        for i in range(ndays):
-            day = i+1
-            expected_results['numbers'].append(
-                {
-                    'date': date(year, month, day).isoformat(),
-                    'number': day,
-                    'url': self.phony_url
-                }
-            )
-        
-        # get results
-        response = self.client.get(f'/api/{year:04d}/{month:02d}/', follow=True)
-        self.assertEqual(expected_status, response.status_code)
-        self.assertDictEqual(expected_results, response.json())
+            # middle
+            date(2022,1,1): status.HTTP_200_OK,
+            date(2050,1,1): status.HTTP_200_OK,
 
-    def test_year(self):
-        year = 2022
-        month_range = [5, 6]
+            # upper bound
+            date(2099,1,1): status.HTTP_200_OK,
+            date(2100,1,1): status.HTTP_404_NOT_FOUND,
+        }
 
-        # setup expected results
-        expected_status = 200
-        expected_results = {'numbers': []} # every day for given month
-        for month in month_range:
-            _, ndays = monthrange(year, month)
-            for i in range(ndays):
-                day = i+1
-                expected_results['numbers'].append(
-                    {
-                        'date': date(year, month, day).isoformat(),
-                        'number': day,
-                        'url': self.phony_url
-                    }
-                )
-
-        # get results
-        response = self.client.get(f'/api/{year:04d}/', follow=True)
-        self.assertEqual(expected_status, response.status_code)
-        self.assertDictEqual(expected_results, response.json())
-
-    def test_valid_format_day(self):
-        """Assert day entered with leading zero is valid"""
-        year  = 2022
-        month = 5
-        day   = 5
-        
-        # setup expected results
-        expected_status = 200
-        expected_results = {'numbers': []}
-        expected_results['numbers'].append(
-            {
-                'date': date(year, month, day).isoformat(),
-                'number': day,
-                'url': self.phony_url
-            }
-        )
-
-        # get results
-        response_single_digit = self.client.get(f'/api/{year:04d}/{month:02d}/{day:01d}', follow=True)
-        response_double_digit = self.client.get(f'/api/{year:04d}/{month:02d}/{day:02d}', follow=True)
-        
-        self.assertEqual(response_single_digit.status_code, response_double_digit.status_code)
-        self.assertDictEqual(response_single_digit.json(), response_double_digit.json())
-        
-        # Transitive relationship; only need to test one at this point
-        self.assertEqual(expected_status, response_single_digit.status_code)
-        self.assertDictEqual(expected_results, response_single_digit.json())
-
-    def test_valid_format_month(self):
-        """Assert month entered with leading zero is valid"""
-        year  = 2022
-        month = 5
-
-        # setup expected results
-        expected_status = 200
-        expected_results = {'numbers': []} # every day for given month
-        _, ndays = monthrange(year, month)
-        for i in range(ndays):
-            day = i+1
-            expected_results['numbers'].append(
-                {
-                    'date': date(year, month, day).isoformat(),
-                    'number': day,
-                    'url': self.phony_url
-                }
-            )
-        
-        # get results
-        response_single_digit = self.client.get(f'/api/{year:04d}/{month:01d}/', follow=True)
-        response_double_digit = self.client.get(f'/api/{year:04d}/{month:02d}/', follow=True)
-        
-        self.assertEqual(response_single_digit.status_code, response_double_digit.status_code)
-        self.assertDictEqual(response_single_digit.json(), response_double_digit.json())
-        
-        # Transitive relationship; only need to test one at this point
-        self.assertEqual(expected_status, response_single_digit.status_code)
-        self.assertDictEqual(expected_results, response_single_digit.json())
-
-    def test_invalid_route(self):
-        # setup expected results
-        expected_status = 404
-
-        # get results
-        response = self.client.get(f'/api/2022/05/abc', follow=True)
-        self.assertEqual(expected_status, response.status_code)
-
-        response = self.client.get(f'/api/blahblah', follow=True)
-        self.assertEqual(expected_status, response.status_code)
-
-    def test_number_not_in_database(self):
-        # setup expected results
-        expected_status = 200
-        expected_results = {'numbers': []}
-
-        # get results
-        response = self.client.get(f'/api/2022/04/05', follow=True)
-        self.assertEqual(expected_status, response.status_code)
-        self.assertDictEqual(expected_results, response.json())
-
-class MakeKeyTests(SimpleTestCase):
-    def test_year(self):
-        year = 2020
-        expected_results = '2020'
-        results = make_key(year=year)
-        self.assertEqual(expected_results, results)
-
-    def test_year_month(self):
-        year, month = 2020, 8
-        expected_results = f'{year:04d}-{month:02d}'
-        results = make_key(year=year, month=month)
-        self.assertEqual(expected_results, results)
-
-    def test_year_month_day(self):
-        year, month, day = 2020, 8, 17
-        expected_results = f'{year:04d}-{month:02d}-{day:02d}'
-        results = make_key(year=year, month=month, day=day)
-        self.assertEqual(expected_results, results)
+        for d, expected_status_code in test_dates.items():
+            url = reverse('number-list') + '{:04d}/'.format(d.year)
+            response:Response = self.client.get(url, follow=True)
+            self.assertEqual(response.status_code, expected_status_code, msg=f'{d} returned an unexpected result.')
+            if expected_status_code == status.HTTP_200_OK:
+                self.assertEqual(type(response.json()), list)
