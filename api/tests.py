@@ -17,20 +17,19 @@ class APIReadTests(APITestCase):
         serializer = NumberSerializer(qs, many=True)
         return list(serializer.data)
 
-
-
     def assertResponseEqual(self, url:str, expected_response:list[dict]):
         """Get response from `url` and compare to `expected_response."""
         response:Response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertListEqual(response.json(), expected_response)
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """Create dummy database & target date"""
-        self.target_date = date(2020, 5, 15)
+        cls.target_date = date(2020, 5, 15)
         # 2020-05-15 -> 2021-05-15
-        start_date = date(self.target_date.year, self.target_date.month, self.target_date.day)
-        end_date = date(self.target_date.year+1, self.target_date.month, self.target_date.day)
+        start_date = date(cls.target_date.year, cls.target_date.month, cls.target_date.day)
+        end_date = date(cls.target_date.year+1, cls.target_date.month, cls.target_date.day)
         for i in range((end_date-start_date).days+1):
             target_date = start_date + timedelta(days=i)
             Number.objects.create(date=target_date, number=target_date.day)
@@ -91,3 +90,31 @@ class APIReadTests(APITestCase):
             self.assertEqual(response.status_code, expected_status_code, msg=f'{d} returned an unexpected result.')
             if expected_status_code == status.HTTP_200_OK:
                 self.assertEqual(type(response.json()), list)
+
+class APICreateTests(APITestCase):
+    urlpatterns = [
+        path('', include('api.urls')),
+    ]
+    
+
+    url = reverse('add-number')
+
+    def setUp(self):
+        self.qs = Number.objects.all()
+        self.test_data = {
+            'date': '2020-08-17',
+            'number': 8,
+            'url': 'https://youtu.be/W-3MP27IU-I',
+            'transcript': "here we go for today's number it's August 17/2020 10 balls each ball has a number they're numbered one through 10 swirl the numbers pick a number once again today's number is 8"
+        }
+
+    def test_create_number(self):
+        response:Response = self.client.post(self.url, data=self.test_data, follow=True)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        number = self.qs.get(date=self.test_data['date'])
+        number_data = dict(NumberSerializer(number).data)
+        number_data.pop('id')
+
+        self.assertTrue(number)
+        self.assertDictEqual(self.test_data, number_data)

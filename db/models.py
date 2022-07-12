@@ -10,6 +10,9 @@ class Number(models.Model):
     class Meta:
         ordering = ['date']
 
+    def __hash__(self):
+        return super().__hash__()
+
     def __str__(self):
         return self.date.isoformat()
 

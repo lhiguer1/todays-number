@@ -1,3 +1,4 @@
+from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import permissions
 from db.models import Number
@@ -22,3 +23,15 @@ class NumberListView(generics.ListAPIView):
         queryset = queryset.filter(**filters)
 
         return queryset
+
+class NumberCreateView(generics.CreateAPIView):
+    queryset = Number.objects.all()
+    serializer_class = NumberSerializer
+
+class NumberUpdateView(generics.UpdateAPIView):
+    queryset = Number.objects.all()
+    serializer_class = NumberSerializer
+
+class NumberDestroyView(generics.DestroyAPIView):
+    queryset = Number.objects.all()
+    serializer_class = NumberSerializer
