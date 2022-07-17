@@ -26,6 +26,6 @@ urlpatterns = [
             title="Today's Number API",
             description="DAVID LYNCH THEATER Presents: Today's Number Is...",
             version="1.0.0",
-            permission_classes=[permissions.AllowAny]
+            # permission_classes=[permissions.AllowAny]
         ), name='openapi-schema'),
 ]
