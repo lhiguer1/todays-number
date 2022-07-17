@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Number(models.Model):
-    date = models.DateField()
+    date = models.DateField(unique=True)
     number = models.PositiveSmallIntegerField()
     url = models.URLField()
     transcript = models.TextField()
