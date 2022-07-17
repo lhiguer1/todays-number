@@ -1,6 +1,6 @@
-from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework.response import Response
 from db.models import Number
 from db.serializers import NumberSerializer
 
@@ -23,6 +23,17 @@ class NumberListView(generics.ListAPIView):
         queryset = queryset.filter(**filters)
 
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'numbers': serializer.data})
 
 class NumberCreateView(generics.CreateAPIView):
     queryset = Number.objects.all()
