@@ -2,5 +2,3 @@ Django
 yt-dlp
 djangorestframework
 python-dotenv
-PyYAML
-uritemplate
