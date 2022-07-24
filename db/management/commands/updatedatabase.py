@@ -1,14 +1,28 @@
+import requests
+import urllib.parse
 import re
 from datetime import date
 from pathlib import Path
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandParser
 import speech_recognition as sr
 
 from ._common import DATA_PATH
-from db.models import Number
 
 class Command(BaseCommand):
     help='Find unprocessed videos and update database. Run `scrapevids` command first.'
+
+    def add_arguments(self, parser: CommandParser):
+        parser.add_argument('--baseurl',
+            type=urllib.parse.urlparse,
+            default='http://127.0.0.1:8000/',
+            help='Location of endpoints.'
+        )
+
+        parser.add_argument('--authtoken',
+            type=str,
+            help='Authorization token',
+            required=True
+        )
 
     def get_number_from_transcript(cls, transcript):
         numbers = {
@@ -48,37 +62,53 @@ class Command(BaseCommand):
         
 
     def handle(self, *args, **options):
+        api_endpoint: urllib.parse.ParseResult = options['baseurl']
         yturl = lambda id: f'https://youtu.be/{id}'
-        files = DATA_PATH.glob('*.flac')
-        succ_count = 0
-        atmp_count = 0
-        for f in files:
-            self.stdout.write(f'[*] Processing {f.name}')
+        all_vids = list(DATA_PATH.glob('*.flac'))
+
+        try:
+            response = requests.get(api_endpoint._replace(path='/api/ping').geturl())
+            assert (response.status_code == 200) and (response.json().get('success') == True), 'Unable to ping server'
+        except (Exception, AssertionError) as e:
+            self.stdout.write(self.style.NOTICE(f'Unable to reach api endpoint: {e}'))
+            return
+        
+        # only process files that have not already been added
+        response = requests.get(api_endpoint._replace(path='/api/').geturl())
+        response_numbers = response.json()['numbers']
+
+        dates_to_ignore = [number['date'] for number in response_numbers]
+        vids = list(filter(lambda f: f.name.split('.')[0] not in dates_to_ignore, all_vids))
+
+        for v in vids:
+            self.stdout.write(f'[*] Processing {v.name}')
             try:
-                diso, urlid, _ = f.name.split('.')
+                diso, urlid, _ = v.name.split('.')
                 d = date.fromisoformat(diso)
             except Exception as e:
-                self.stdout.write(self.style.NOTICE(f'[--] Unable to process {f}: {e}.'))
+                self.stdout.write(self.style.NOTICE(f'[--] Unable to process {v}: {e}.'))
                 continue
-
-            if Number.objects.filter(date=d, url=yturl(urlid)).exists():
-                self.stdout.write(f'[--] Number exists in database.')
-                continue
-
-            atmp_count += 1
 
             try:
-                transcript = self.get_transcript(f)
+                transcript = self.get_transcript(v)
             except Exception as e:
-                self.stdout.write(self.style.NOTICE(f'[--] Unable to extract transcript from {f}: {e}.'))
+                self.stdout.write(self.style.NOTICE(f'[--] Unable to extract transcript from {v}: {e}.'))
                 continue
 
             number = self.get_number_from_transcript(transcript)
             
-            new_num = Number(date=d, number=number, url=yturl(urlid), transcript=transcript)
-            new_num.save()
-            succ_count += 1
-            self.stdout.write(self.style.SUCCESS(f'[++] {d} added to database.'))
+            data = {
+                'date': d.isoformat(),
+                'number': number,
+                'url': yturl(urlid),
+                'transcript': transcript,
+            }
 
-        self.stdout.write(self.style.SUCCESS(f'[++] {succ_count}/{atmp_count} processed.'))
+            headers = {
+                'Authorization': 'Token {}'.format(options['authtoken'])
+            }
+
+            response = requests.post(api_endpoint._replace(path='/api/add/').geturl(), data=data, headers=headers)
+            
+            self.stdout.write(self.style.SUCCESS(f'[++] {d} added to database.'))
         

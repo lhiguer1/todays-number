@@ -2,3 +2,4 @@ Django
 yt-dlp
 djangorestframework
 python-dotenv
+requests
