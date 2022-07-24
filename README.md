@@ -15,6 +15,8 @@ Here we go for today's number. Ten balls; each ball has a number; numbers one th
 `/api/2020/08`
 ### Get year's numbers
 `/api/2021`
+### Get all numbers
+`/api/`
 
 ## Response
 Request will return a JSON object.
@@ -36,5 +38,3 @@ Request will return a JSON object.
   ]
 }
 ```
-## Notes
-- Number can be `null` if unable to extract from transcript
