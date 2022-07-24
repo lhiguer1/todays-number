@@ -1,8 +1,16 @@
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.response import Response
 from db.models import Number
 from db.serializers import NumberSerializer
+
+class PingView(APIView):
+    """Used to verify API server is running"""
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        return Response({'success': True})
 
 class NumberListView(generics.ListAPIView):
     queryset = Number.objects.all()

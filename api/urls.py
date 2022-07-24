@@ -23,6 +23,8 @@ day_pattern = r'(?P<day>3[01]|0\d|[12]\d)' # 01-31
 date_pattern = r'^(?:{}/(?:{}/(?:{}/)?)?)?$'.format(year_pattern, month_pattern, day_pattern)
 
 urlpatterns = [
+    path('ping/', views.PingView.as_view(), name='ping'),
+
     # Create
     path('add/', views.NumberCreateView.as_view(), name='add-number'),
 
