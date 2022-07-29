@@ -5,7 +5,12 @@ from datetime import date
 from pathlib import Path
 from django.core.management.base import BaseCommand, CommandParser
 import speech_recognition as sr
+import shelve
 
+from rest_framework import status
+
+from db.models import Number
+from db.serializers import NumberSerializer
 from ._common import DATA_PATH
 
 class Command(BaseCommand):
@@ -25,6 +30,10 @@ class Command(BaseCommand):
         )
 
     def get_number_from_transcript(cls, transcript):
+        """Return number extracted from transcript. Return None if number is not found."""
+        if not transcript:
+            return None
+
         numbers = {
             '10': 10, 'ten': 10,
             '9': 9,   'nine': 9,
@@ -42,8 +51,6 @@ class Command(BaseCommand):
         m = re.search(pattern, transcript)
         if m:
             return numbers[m.group('todays_number')]
-        else:
-            return None
 
     def get_transcript(cls, file:Path):
         try:
@@ -58,8 +65,6 @@ class Command(BaseCommand):
         except sr.RequestError as e:
             pass
             # raise sr.UnknownValueError(f"Could not request results from Google Speech Recognition service for {file}: {e}")
-        return ''
-        
 
     def handle(self, *args, **options):
         api_endpoint: urllib.parse.ParseResult = options['baseurl']
@@ -80,35 +85,33 @@ class Command(BaseCommand):
         dates_to_ignore = [number['date'] for number in response_numbers]
         vids = list(filter(lambda f: f.name.split('.')[0] not in dates_to_ignore, all_vids))
 
-        for v in vids:
-            self.stdout.write(f'[*] Processing {v.name}')
-            try:
-                diso, urlid, _ = v.name.split('.')
-                d = date.fromisoformat(diso)
-            except Exception as e:
-                self.stdout.write(self.style.NOTICE(f'[--] Unable to process {v}: {e}.'))
-                continue
+        with shelve.open(str(DATA_PATH / 'failed.shelve'), writeback=True) as failed_log:
+            for v in vids:
+                new_number = Number()
+                self.stdout.write(f'[*] Processing {v.name}')
+                try:
+                    diso, urlid, _ = v.name.split('.')
+                    new_number.url = yturl(urlid)
+                    new_number.date = date.fromisoformat(diso)
+                except Exception as e:
+                    pass
+                    # self.stdout.write(self.style.NOTICE(f'[--] Unable to parse `{v}` title: {e}.'))
 
-            try:
-                transcript = self.get_transcript(v)
-            except Exception as e:
-                self.stdout.write(self.style.NOTICE(f'[--] Unable to extract transcript from {v}: {e}.'))
-                continue
+                new_number.transcript = self.get_transcript(v)
+                new_number.number = self.get_number_from_transcript(new_number.transcript)
+                
+                serializer = NumberSerializer(new_number)
+                headers = {
+                    'Authorization': 'Token {}'.format(options['authtoken'])
+                }
 
-            number = self.get_number_from_transcript(transcript)
+                response = requests.post(api_endpoint._replace(path='/api/add/').geturl(), data=serializer.data, headers=headers)
+
+                if response.status_code == status.HTTP_201_CREATED:
+                    self.stdout.write(self.style.SUCCESS(f'[+] {serializer.data} added to database.'))
+                else:
+                    self.stdout.write(self.style.ERROR(f'[-] Failed to add {serializer.data} to database.'))
+                    if serializer.data not in failed_log.setdefault('numbers', []):
+                        failed_log['numbers'].append(serializer.data)
+                        failed_log.sync()
             
-            data = {
-                'date': d.isoformat(),
-                'number': number,
-                'url': yturl(urlid),
-                'transcript': transcript,
-            }
-
-            headers = {
-                'Authorization': 'Token {}'.format(options['authtoken'])
-            }
-
-            response = requests.post(api_endpoint._replace(path='/api/add/').geturl(), data=data, headers=headers)
-            
-            self.stdout.write(self.style.SUCCESS(f'[++] {d} added to database.'))
-        
