@@ -5,3 +5,5 @@ python-dotenv
 requests
 ipython
 gunicorn
+dj_database_url
+psycopg2

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from dotenv import dotenv_values
+import dj_database_url
 import os
 
 config = {
@@ -22,6 +23,8 @@ config = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Heroku stuff
+IS_HEROKU = "DYNO" in config
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -32,10 +35,10 @@ SECRET_KEY = config['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config['DJANGO_DEBUG'] == 'True'
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '.herokuapp.com',
-]
+if IS_HEROKU:
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -100,6 +103,7 @@ WSGI_APPLICATION = 'todays_number.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+CONN_MAX_AGE = 600
 
 DATABASES = {
     'default': {
@@ -107,6 +111,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+if 'DATABASE_URL' in config:
+    DATABASES['default'] = dj_database_url.config(conn_max_age=CONN_MAX_AGE, ssl_require=True)
 
 
 # Password validation
