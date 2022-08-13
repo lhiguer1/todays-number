@@ -1,4 +1,4 @@
-from pathlib import Path
+from django.conf import settings
 
-DATA_PATH = Path(__file__).resolve().parent.parent.parent.parent / 'data'
+DATA_PATH = settings.BASE_DIR / 'data'
 PLAYLIST_URL = 'https://youtube.com/playlist?list=PLTPQcjlcvvXFtR0R91Gh5j9Xi8cq0oN3Y'
