@@ -19,7 +19,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser):
         parser.add_argument('--baseurl',
             type=urllib.parse.urlparse,
-            default='http://127.0.0.1:8000/',
+            default='http://127.0.0.1:5000/',
             help='Location of endpoints.'
         )
 
