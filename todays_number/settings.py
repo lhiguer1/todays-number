@@ -11,29 +11,23 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import dotenv_values
 import dj_database_url
 import os
-
-config = {
-    **dotenv_values(),
-    **os.environ, # override loaded values with environment variables
-}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Heroku stuff
-IS_HEROKU = "DYNO" in config
+IS_HEROKU = "DYNO" in os.environ
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['DJANGO_SECRET_KEY']
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config['DJANGO_DEBUG'] == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG') == 'True'
 
 if IS_HEROKU:
     ALLOWED_HOSTS = ['*']
@@ -112,7 +106,7 @@ DATABASES = {
     }
 }
 
-if 'DATABASE_URL' in config:
+if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(conn_max_age=CONN_MAX_AGE, ssl_require=True)
 
 
