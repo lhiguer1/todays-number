@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'db',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
+
 ]
 
 # DRF
@@ -64,7 +66,14 @@ REST_FRAMEWORK = {
 if not DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = ['rest_framework.renderers.JSONRenderer']
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
