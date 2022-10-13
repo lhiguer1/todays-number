@@ -1,4 +1,5 @@
 .venv/
+.env
 .git*
 Dockerfile
 db.sqlite3

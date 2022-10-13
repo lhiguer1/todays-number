@@ -1,14 +1,12 @@
 FROM python:3.10
 
-RUN useradd -m david
-USER david
+ENV PORT=5000
+EXPOSE $PORT
+WORKDIR /usr/src/app/
 
-WORKDIR /usr/src/app
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
-
-EXPOSE 5000
-
-RUN python manage.py collectstatic --no-input
-
-CMD python manage.py runserver 0.0.0.0:5000
+RUN pip install --user --no-cache-dir -r requirements.txt &&  \
+    python manage.py collectstatic --no-input && \
+    python manage.py makemigrations && \
+    python manage.py migrate
+CMD python manage.py runserver 0.0.0.0:$PORT
