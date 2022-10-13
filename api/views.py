@@ -1,7 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.views import APIView
-from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework.request import Request
+from django.db.models import Q, QuerySet
 from db.models import Number
 from db.serializers import NumberSerializer
 
@@ -9,7 +10,7 @@ class PingView(APIView):
     """Used to verify API server is running"""
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get(self, request):
+    def get(self, request:Request, *args, **kwargs):
         return Response({'success': True})
 
 class NumberListView(generics.ListAPIView):
@@ -21,16 +22,15 @@ class NumberListView(generics.ListAPIView):
         """
         Return queryset filtered by specified date. Return all if none is provided.
         """
-        filters = dict()
+        qs:QuerySet = super().get_queryset()
+        lookup = Q()
 
         for field in self.kwargs:
-            key = f'date__{field}'
-            filters[key] = self.kwargs[field]
+            lookup &= Q(**{f'date__{field}': self.kwargs[field]})
 
-        queryset = self.queryset
-        queryset = queryset.filter(**filters)
+        qs = qs.filter(lookup)
 
-        return queryset
+        return qs
 
 class NumberCreateView(generics.CreateAPIView):
     queryset = Number.objects.all()
