@@ -5,7 +5,7 @@ EXPOSE $PORT
 WORKDIR /usr/src/app/
 
 COPY . .
-RUN pip install --user --no-cache-dir -r requirements.txt &&  \
+RUN pip install --no-cache-dir -r requirements.txt &&  \
     python manage.py collectstatic --no-input && \
     python manage.py makemigrations && \
     python manage.py migrate
