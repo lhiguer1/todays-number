@@ -1,8 +1,11 @@
 import re
 from pathlib import Path
-from yt_dlp.postprocessor import PostProcessor
+from urllib import parse
+from yt_dlp import YoutubeDL
+from yt_dlp.postprocessor import FFmpegExtractAudioPP, PostProcessor
 from yt_dlp.utils import PostProcessingError
 from datetime import datetime
+
 
 class ChangeNamePP(PostProcessor):
     """Change filename to {title_date}.{id}."""
@@ -35,3 +38,22 @@ class ChangeNamePP(PostProcessor):
 
         self.to_screen(f'`{old_file.name}` renamed to `{new_file.name}`')
         return [], info
+
+def scrapevids(playlist_url:str, save_path:Path):
+    ydl_opts = {
+        # 'ignoreerrors': True, # workaround for broken PostProcessor
+        'sleep_interval': 3,
+        'max_sleep_interval': 6,
+        'format': 'bestaudio',
+        'download_archive': save_path / 'archive.txt',
+        'paths': {
+            'home': save_path.as_posix()
+        },
+    }
+
+    with YoutubeDL(ydl_opts) as ydl:
+        ydl.add_post_processor(FFmpegExtractAudioPP(preferredcodec='flac'))
+        ydl.add_post_processor(ChangeNamePP())
+        ydl.download([playlist_url])
+
+    print(f'Files saved to {save_path}.')
