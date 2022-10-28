@@ -15,7 +15,7 @@ Including another URLconf
 
 from django.urls import path, re_path
 from rest_framework.authtoken.views import ObtainAuthToken
-from . import views
+from db import views
 
 
 year_pattern = r'(?P<year>20[2-9]\d)' # 2000-2100 exclusive
