@@ -1,23 +1,25 @@
-from rest_framework import generics, permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.request import Request
+import datetime
+
 from django.db.models import Q, QuerySet
-from db.models import Number
-from db.serializers import NumberSerializer
+from django.shortcuts import get_object_or_404
+from rest_framework import (
+    authentication,
+    exceptions,
+    generics,
+    mixins,
+    permissions,
+)
 
-class PingView(APIView):
-    """Used to verify API server is running"""
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+from .models import Number
+from .serializers import NumberSerializer, NumberRetrieveUpdateDestroySerializer
 
-    def get(self, request:Request, *args, **kwargs):
-        return Response({'success': True})
-
-class NumberListView(generics.ListAPIView):
+class BaseNumberMixin:
     queryset = Number.objects.all()
     serializer_class = NumberSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
+class NumberListAPIView(BaseNumberMixin, generics.ListAPIView):
     def get_queryset(self):
         """
         Return queryset filtered by specified date. Return all if none is provided.
@@ -32,14 +34,24 @@ class NumberListView(generics.ListAPIView):
 
         return qs
 
-class NumberCreateView(generics.CreateAPIView):
-    queryset = Number.objects.all()
-    serializer_class = NumberSerializer
+class NumberListCreateAPIView(mixins.CreateModelMixin, NumberListAPIView):
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
-class NumberUpdateView(generics.UpdateAPIView):
-    queryset = Number.objects.all()
-    serializer_class = NumberSerializer
+class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = NumberRetrieveUpdateDestroySerializer
 
-class NumberDestroyView(generics.DestroyAPIView):
-    queryset = Number.objects.all()
-    serializer_class = NumberSerializer
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        try:
+            date = datetime.date.fromisoformat('{year:04}-{month:02}-{day:02}'.format_map(self.kwargs))
+        except ValueError as e:
+            raise exceptions.NotFound(e)
+
+        obj = get_object_or_404(queryset, date=date)
+
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
+
+        return obj
