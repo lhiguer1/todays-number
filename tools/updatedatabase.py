@@ -61,7 +61,7 @@ def updatedb(baseurl:urllib.parse.ParseResult, authtoken:str):
         return
     
     # only process files that have not already been added
-    response = requests.get(api_endpoint._replace(path='/api/').geturl())
+    response = requests.get(api_endpoint._replace(path='/api/numbers/').geturl())
     response_numbers = response.json()
 
     dates_to_ignore = [number['date'] for number in response_numbers]
@@ -91,7 +91,7 @@ def updatedb(baseurl:urllib.parse.ParseResult, authtoken:str):
                 'Authorization': 'Token {}'.format(authtoken)
             }
 
-            response = requests.post(api_endpoint._replace(path='/api/add/').geturl(), data=new_number, headers=headers)
+            response = requests.post(api_endpoint._replace(path='/api/numbers/').geturl(), data=new_number, headers=headers)
 
             if response.status_code == status.HTTP_201_CREATED:
                 print(f'[+] {new_number} added to database.')
