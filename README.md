@@ -1,3 +1,4 @@
+# Today's Number
 Here we go for today's number. Ten balls; each ball has a number; numbers one through ten. Swirl the numbers. Pick a number. Today's number is...
 
 ## Number Attributes
@@ -8,33 +9,55 @@ Here we go for today's number. Ten balls; each ball has a number; numbers one th
 | url        | string | URL of video                                        |
 | transcript | string | Transcript obtained using Google Speech Recognition | 
 
-## Endpoints
-### Get day's numbers
-`/api/2020/08/17`
-### Get month's numbers
-`/api/2020/08`
-### Get year's numbers
-`/api/2021`
-### Get all numbers
-`/api/`
+### Endpoints
+#### Base URL
+`https://todays-number.herokuapp.com/api/numbers/`
+#### Get all numbers
+`/api/numbers/`
+#### Get year's numbers
+`/api/numbers/2021/`
+#### Get month's numbers
+`/api/numbers/2020/08/`
+#### Get day's numbers
+`/api/numbers/2020/08/17/`
 
-## Response
-Request will return a JSON object.
+#### Create a new number
+Accounts with permissons can make POST, PUT, PATCH, and DELETE requests on the days number endpoint. However, any updates to the number are unlikely unless there is an update to a past number.
+```json
+// Content
+{
+  "number": 8,
+  "url": "https://youtu.be/W-3MP27IU-I",
+  "transcript": "here we go for today's n…ain today's number is 8"
+}
+```
+
+### Examples
+#### List of numbers
+```json
+[
+  {
+    "date": "2020-08-17",
+    "number": 8,
+    "url": "https://youtu.be/W-3MP27IU-I",
+    "transcript": "here we go for today's n…ain today's number is 8"
+  },
+  {
+    "date": "2020-08-18",
+    "number": 3,
+    "url": "https://youtu.be/c9jFcIwEQ3k",
+    "transcript": "here we go for today's n…ber today's number is 3"
+  },
+  ...
+]
+```
+
+### Single number
 ```json
 {
-  "numbers": [
-    {
-      "date": "2020-08-17",
-      "number": 8,
-      "url": "https://youtu.be/W-3MP27IU-I",
-      "transcript": "here we go for today's number it's August 17/2020 10 balls each ball has a number they're numbered one through 10 swirl the numbers pick a number once again today's number is 8"
-    },
-    {
-      "date": "2020-08-18",
-      "number": 3,
-      "url": "https://youtu.be/c9jFcIwEQ3k",
-      "transcript": "here we go for today's number it's August 18/2020 10 balls each ball has a number numbers one through 10 swirl the numbers pick a number today's number is 3"
-    }
-  ]
+  "date": "2020-08-17",
+  "number": 8,
+  "url": "https://youtu.be/W-3MP27IU-I",
+  "transcript": "here we go for today's n…ain today's number is 8"
 }
 ```
