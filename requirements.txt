@@ -1,4 +1,4 @@
-Django>=4.0.0,<=4.1.0
+Django>=4.0.0,<4.1.0
 yt-dlp
 djangorestframework
 python-dotenv
