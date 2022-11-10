@@ -1,35 +1,15 @@
 from django.db import models
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator,
+    URLValidator,
+)
 
-# Create your models here.
 class Number(models.Model):
     date = models.DateField(unique=True)
-    number = models.PositiveSmallIntegerField()
-    url = models.URLField()
-    transcript = models.TextField()
+    number = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    url = models.URLField(blank=False, validators=[URLValidator])
+    transcript = models.TextField(blank=False)
 
     class Meta:
         ordering = ['date']
-
-    def __hash__(self):
-        return super().__hash__()
-
-    def __str__(self):
-        return self.date.isoformat()
-
-    def __eq__(self, other):
-        return self.date == other.date
-
-    def __nq__(self, other):
-        return self.date != other.date
-
-    def __lt__(self, other):
-        return self.date < other.date
-
-    def __le__(self, other):
-        return self.date <= other.date
-
-    def __gt__(self, other):
-        return self.date > other.date
-
-    def __ge__(self, other):
-        return self.date >= other.date
