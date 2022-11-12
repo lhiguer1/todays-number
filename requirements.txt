@@ -7,7 +7,5 @@ ipython
 gunicorn
 dj_database_url
 psycopg2
-django-cors-headers
 markdown
-whitenoise
 SpeechRecognition

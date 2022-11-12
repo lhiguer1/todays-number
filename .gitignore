@@ -4,6 +4,7 @@ __pycache__/
 
 # django stuff
 /static/
+/staticfiles/
 db.sqlite3
 
 # scraped vids
