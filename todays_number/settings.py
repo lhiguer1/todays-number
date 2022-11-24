@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'storages',
 
     'db',
 ]
@@ -133,10 +134,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# AWS settings
+AWS_ACCESS_KEY_ID=os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME=os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME=os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+
+# django storages settings
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+STATICFILES_STORAGE = 'todays_number.storages.backends.StaticRootS3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'todays_number.storages.backends.MediaRootS3Boto3Storage'

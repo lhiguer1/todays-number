@@ -9,3 +9,5 @@ dj_database_url
 psycopg2
 markdown
 SpeechRecognition
+django-storages
+boto3
