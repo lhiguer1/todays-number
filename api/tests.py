@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from datetime import date, timedelta
-from db.models import Number
-from db.serializers import NumberSerializer
+from daily_numbers.models import Number
+from daily_numbers.serializers import NumberSerializer
 
 class APIReadTests(APITestCase):
     urlpatterns = [

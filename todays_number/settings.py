@@ -52,8 +52,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'storages',
+    'django_rename_app',
 
-    'db',
+    'daily_numbers',
 ]
 
 MIDDLEWARE = [

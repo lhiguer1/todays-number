@@ -23,5 +23,5 @@ urlpatterns = [
     path('ping/', views.PingAPIView.as_view(), name='ping'),
 
     # Numbers
-    path('numbers/', include('db.urls'))
+    path('numbers/', include('daily_numbers.urls'))
 ]

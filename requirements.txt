@@ -11,3 +11,4 @@ markdown
 SpeechRecognition
 django-storages
 boto3
+django-rename-app
