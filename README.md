@@ -24,7 +24,6 @@ Here we go for today's number. Ten balls; each ball has a number; numbers one th
 #### Create a new number
 Accounts with permissons can make POST, PUT, PATCH, and DELETE requests on the days number endpoint. However, any updates to the number are unlikely unless there is an update to a past number.
 ```json
-// Content
 {
   "number": 8,
   "url": "https://youtu.be/W-3MP27IU-I",
@@ -47,8 +46,7 @@ Accounts with permissons can make POST, PUT, PATCH, and DELETE requests on the d
     "number": 3,
     "url": "https://youtu.be/c9jFcIwEQ3k",
     "transcript": "here we go for today's n…ber today's number is 3"
-  },
-  ...
+  }
 ]
 ```
 

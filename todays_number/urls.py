@@ -16,7 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from rest_framework.authtoken.views import ObtainAuthToken
+
+from . import views
+
 urlpatterns = [
+    path('ping/', views.PingAPIView.as_view(), name='ping'),
+    path('auth/', ObtainAuthToken.as_view()),
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    path('api/', include('daily_numbers.urls')),
 ]
