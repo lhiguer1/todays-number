@@ -1,23 +1,14 @@
 import datetime
-
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import (
-    authentication,
     exceptions,
     generics,
     mixins,
-    permissions,
+    serializers,
 )
+from .mixins import BaseNumberMixin
 
-from .models import Number
-from .serializers import NumberSerializer, NumberRetrieveUpdateDestroySerializer
-
-class BaseNumberMixin:
-    queryset = Number.objects.all()
-    serializer_class = NumberSerializer
-    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
-    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
 class NumberListAPIView(BaseNumberMixin, generics.ListAPIView):
     def get_queryset(self):
@@ -39,7 +30,7 @@ class NumberListCreateAPIView(mixins.CreateModelMixin, NumberListAPIView):
         return self.create(request, *args, **kwargs)
 
 class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = NumberRetrieveUpdateDestroySerializer
+    date = serializers.DateField(read_only=True, format='iso-8601', input_formats=['iso-8601'])
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())

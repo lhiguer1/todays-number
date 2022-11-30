@@ -15,6 +15,3 @@ class NumberSerializer(serializers.ModelSerializer):
             'url',
             'transcript',
         )
-
-class NumberRetrieveUpdateDestroySerializer(NumberSerializer):
-    date = serializers.DateField(read_only=True, format='iso-8601', input_formats=['iso-8601'])

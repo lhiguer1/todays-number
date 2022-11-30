@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'storages',
     'django_rename_app',
+    'django_filters',
 
     'daily_numbers',
 ]

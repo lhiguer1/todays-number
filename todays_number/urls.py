@@ -22,7 +22,7 @@ from . import views
 
 urlpatterns = [
     path('ping/', views.PingAPIView.as_view(), name='ping'),
-    path('auth/', ObtainAuthToken.as_view()),
-    path('admin/', admin.site.urls),
-    path('api/', include('daily_numbers.urls')),
+    path('auth/', ObtainAuthToken.as_view(), name='token'),
+    path('admin/', admin.site.urls, name='admin'),
+    path('api/', include('daily_numbers.routers'), name='api'),
 ]
