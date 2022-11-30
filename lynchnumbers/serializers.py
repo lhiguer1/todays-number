@@ -1,4 +1,4 @@
-from daily_numbers.models import Number
+from .models import Number
 from rest_framework import serializers
 
 class NumberSerializer(serializers.ModelSerializer):

@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'django_rename_app',
     'django_filters',
 
-    'daily_numbers',
+    'lynchnumbers',
 ]
 
 MIDDLEWARE = [

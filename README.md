@@ -36,7 +36,7 @@ Accounts with permissons can make POST, PUT, PATCH, and DELETE requests on the d
 ]
 ```
 
-### Singleton
+#### Singleton
 `/api/numbers/2020-08-17`
 ```json
 {
