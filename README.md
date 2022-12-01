@@ -47,12 +47,12 @@ Accounts with permissons can make POST, PUT, PATCH, and DELETE requests on the d
 }
 ```
 
-## Query qarameters
-### Get a range of dates
-#### Filter list by `today`, `yesterday`, `week`, `month`, `year`
+### Query qarameters
+#### Get a range of dates
+##### Filter list by `today`, `yesterday`, `week`, `month`, `year`
 `/api/numbers/?date_range={today,yesterday,week,month,year}`
 
-#### Get list of dates before/after specified date
+##### Get list of dates before/after specified date
 `/api/numbers/?date_after=2020-08-16`<br>
 `/api/numbers/?date_before=2022-12-01`<br>
 `/api/numbers/?date_after=2021-01-01&date_before=2021-02-01`
