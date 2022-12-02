@@ -7,10 +7,10 @@ from rest_framework import (
     mixins,
     serializers,
 )
-from .mixins import BaseNumberMixin
+from .mixins import BaseNumberMixin, BaseAuthenticationPermission
 
 
-class NumberListAPIView(BaseNumberMixin, generics.ListAPIView):
+class NumberListAPIView(BaseNumberMixin, BaseAuthenticationPermission,generics.ListAPIView):
     def get_queryset(self):
         """
         Return queryset filtered by specified date. Return all if none is provided.
@@ -29,7 +29,7 @@ class NumberListCreateAPIView(mixins.CreateModelMixin, NumberListAPIView):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, generics.RetrieveUpdateDestroyAPIView):
+class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, BaseAuthenticationPermission, generics.RetrieveUpdateDestroyAPIView):
     date = serializers.DateField(read_only=True, format='iso-8601', input_formats=['iso-8601'])
 
     def get_object(self):
