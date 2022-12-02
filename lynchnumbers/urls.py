@@ -1,5 +1,7 @@
+from django.urls import path
 from rest_framework import routers
 from .viewset import NumberViewset
+from .views import StatisticsView
 
 
 # register_converter(FourDigitYearConverter, 'yyyy')
@@ -16,4 +18,8 @@ from .viewset import NumberViewset
 router = routers.DefaultRouter()
 router.register(r'numbers', NumberViewset, basename='number')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('statistics/', StatisticsView.as_view(), name='statistics'),
+]
+
+urlpatterns += router.urls

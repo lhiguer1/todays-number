@@ -1,4 +1,6 @@
 import datetime
+import statistics
+import collections
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import (
@@ -6,6 +8,7 @@ from rest_framework import (
     generics,
     mixins,
     serializers,
+    response,
 )
 from .mixins import BaseNumberMixin, BaseAuthenticationPermission
 
@@ -46,3 +49,22 @@ class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, BaseAuthenticationPerm
         self.check_object_permissions(self.request, obj)
 
         return obj
+
+class StatisticsView(BaseNumberMixin, BaseAuthenticationPermission, generics.GenericAPIView):
+    def get(self, request, *args, **kwargs):
+        qs:QuerySet = self.get_queryset()
+        sequence = qs.values_list('number', flat=True)
+        stats = {
+            'count': qs.count(),
+            'sequence': sequence,
+            'sum': sum(sequence),
+            'median': statistics.median(sequence),
+            'mean': statistics.mean(sequence),
+            'mode': statistics.mode(sequence),
+            'variance': statistics.pvariance(sequence),
+            'standard_deviation': statistics.pstdev(sequence),
+            'frequency': collections.Counter(sorted(sequence)),
+            'last_picked': {i: qs.filter(number=i).latest('date').date for i in range(1,11)},
+        }
+        return response.Response(stats)
+        
