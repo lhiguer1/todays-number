@@ -1,13 +1,12 @@
 import re
 from pathlib import Path
-from urllib import parse
-from yt_dlp import YoutubeDL
-from yt_dlp.postprocessor import FFmpegExtractAudioPP, PostProcessor
-from yt_dlp.utils import PostProcessingError
 from datetime import datetime
+from yt_dlp import (
+    postprocessor,
+    utils,
+)
 
-
-class ChangeNamePP(PostProcessor):
+class ChangeNamePP(postprocessor.PostProcessor):
     """Change filename to {title_date}.{id}."""
     def get_title_date(cls, title):
         year_pattern  = r'(?P<year>\d{2})' # 2 digit year
@@ -19,7 +18,7 @@ class ChangeNamePP(PostProcessor):
             dt = datetime.strptime(match.group(), '%m/%d/%y')
             d = dt.date()
         except Exception as e:
-            raise PostProcessingError(f'Unable to add title_key to infodict: {e}')
+            raise utils.PostProcessingError(f'Unable to add title_key to infodict: {e}')
 
         return d
 
@@ -34,26 +33,7 @@ class ChangeNamePP(PostProcessor):
             info['filepath'] = str(new_file)
             info['title_date'] = title_date
         except Exception as e:
-            raise PostProcessingError(f'Unable to change filename: {e}')
+            raise utils.PostProcessingError(f'Unable to change filename: {e}')
 
         self.to_screen(f'`{old_file.name}` renamed to `{new_file.name}`')
         return [], info
-
-def scrapevids(playlist_url:str, save_path:Path):
-    ydl_opts = {
-        # 'ignoreerrors': True, # workaround for broken PostProcessor
-        'sleep_interval': 3,
-        'max_sleep_interval': 6,
-        'format': 'bestaudio',
-        'download_archive': save_path / 'archive.txt',
-        'paths': {
-            'home': save_path.as_posix()
-        },
-    }
-
-    with YoutubeDL(ydl_opts) as ydl:
-        ydl.add_post_processor(FFmpegExtractAudioPP(preferredcodec='flac'))
-        ydl.add_post_processor(ChangeNamePP())
-        ydl.download([playlist_url])
-
-    print(f'Files saved to {save_path}.')
