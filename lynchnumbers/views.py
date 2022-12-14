@@ -9,6 +9,7 @@ from rest_framework import (
     mixins,
     serializers,
     response,
+    reverse,
 )
 from .mixins import BaseNumberMixin, BaseAuthenticationPermission
 
@@ -53,6 +54,13 @@ class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, BaseAuthenticationPerm
 class StatisticsView(BaseNumberMixin, BaseAuthenticationPermission, generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         qs:QuerySet = self.get_queryset()
+        def last_picked(number) -> dict:
+            d:datetime.date = qs.filter(number=number).latest('date').date
+            return {
+                'date': d,
+                'singleton': reverse.reverse('number-detail', kwargs={'date': d}, request=request)
+            }
+
         sequence = qs.values_list('number', flat=True)
         stats = {
             'count': qs.count(),
@@ -64,7 +72,7 @@ class StatisticsView(BaseNumberMixin, BaseAuthenticationPermission, generics.Gen
             'variance': statistics.pvariance(sequence),
             'standard_deviation': statistics.pstdev(sequence),
             'frequency': collections.Counter(sorted(sequence)),
-            'last_picked': {i: qs.filter(number=i).latest('date').date for i in range(1,11)},
+            'last_picked': {i: last_picked(i) for i in range(1,11)},
         }
         return response.Response(stats)
         
