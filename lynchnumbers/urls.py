@@ -1,5 +1,5 @@
 from django.urls import path
-from rest_framework import routers
+from .routers import TodaysNumberRouter
 from .viewset import NumberViewset
 from .views import StatisticsView
 
@@ -15,7 +15,7 @@ from .views import StatisticsView
 #     path('<yyyy:year>/<mm:month>/<dd:day>/', NumberRetrieveUpdateDestroyAPIView.as_view(), name='number-detail'),
 # ]
 
-router = routers.DefaultRouter()
+router = TodaysNumberRouter()
 router.register(r'numbers', NumberViewset, basename='number')
 
 urlpatterns = [
