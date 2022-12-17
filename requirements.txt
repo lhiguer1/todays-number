@@ -8,7 +8,7 @@ gunicorn
 dj_database_url
 psycopg2
 markdown
-SpeechRecognition
+SpeechRecognition==3.8.1
 django-storages
 boto3
 django-rename-app
