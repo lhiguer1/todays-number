@@ -41,7 +41,7 @@ Get list of dates before/after specified date<br>
 ]
 ```
 
-#### Singleton
+#### detail
 `/api/numbers/2020-08-17`
 ```json
 {

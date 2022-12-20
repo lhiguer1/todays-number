@@ -58,7 +58,7 @@ class StatisticsView(BaseNumberMixin, BaseAuthenticationPermission, generics.Gen
             d:datetime.date = qs.filter(number=number).latest('date').date
             return {
                 'date': d,
-                'singleton': reverse.reverse('number-detail', kwargs={'date': d}, request=request)
+                'detail': reverse.reverse('number-detail', kwargs={'date': d}, request=request)
             }
 
         sequence = qs.values_list('number', flat=True)
