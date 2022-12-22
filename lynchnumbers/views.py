@@ -10,8 +10,10 @@ from rest_framework import (
     serializers,
     response,
     reverse,
+    views,
 )
 from .mixins import BaseNumberMixin, BaseAuthenticationPermission
+from .models import Number
 
 
 class NumberListAPIView(BaseNumberMixin, BaseAuthenticationPermission,generics.ListAPIView):
@@ -51,9 +53,10 @@ class NumberRetrieveUpdateDestroyAPIView(BaseNumberMixin, BaseAuthenticationPerm
 
         return obj
 
-class StatisticsView(BaseNumberMixin, BaseAuthenticationPermission, generics.GenericAPIView):
+class StatisticsView(views.APIView):
     def get(self, request, *args, **kwargs):
-        qs:QuerySet = self.get_queryset()
+        qs:QuerySet = Number.objects.all()
+
         def last_picked(number) -> dict:
             d:datetime.date = qs.filter(number=number).latest('date').date
             return {
@@ -63,7 +66,7 @@ class StatisticsView(BaseNumberMixin, BaseAuthenticationPermission, generics.Gen
 
         sequence = qs.values_list('number', flat=True)
         stats = {
-            'count': qs.count(),
+            'count': len(sequence),
             'sequence': sequence,
             'sum': sum(sequence),
             'median': statistics.median(sequence),
