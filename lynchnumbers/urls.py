@@ -1,7 +1,6 @@
 from django.urls import path
 from .routers import TodaysNumberRouter
-from .viewset import NumberViewset
-from .views import StatisticsView
+from .views import StatisticsView, NumberViewset
 
 
 router = TodaysNumberRouter()

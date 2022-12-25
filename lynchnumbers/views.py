@@ -2,12 +2,17 @@ import datetime
 import statistics
 import collections
 from django.db.models import QuerySet
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (
     response,
     reverse,
     views,
+    viewsets,
 )
+from .filters import NumberFilterSet
+from .mixins import BaseNumberMixin, BaseAuthenticationPermission
 from .models import Number
+from .pagination import NumberPageNumberPagination
 
 
 class StatisticsView(views.APIView):
@@ -36,3 +41,8 @@ class StatisticsView(views.APIView):
         }
         return response.Response(stats)
         
+class NumberViewset(BaseNumberMixin, BaseAuthenticationPermission, viewsets.ModelViewSet):
+    lookup_field = 'date'
+    pagination_class = NumberPageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = NumberFilterSet
