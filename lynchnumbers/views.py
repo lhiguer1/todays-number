@@ -10,7 +10,7 @@ from rest_framework import (
     viewsets,
 )
 from .filters import NumberFilterSet
-from .mixins import BaseNumberMixin, BaseAuthenticationPermission
+from .mixins import BaseAuthenticationPermission
 from .models import Number
 from .pagination import NumberPageNumberPagination
 
@@ -41,7 +41,10 @@ class StatisticsView(views.APIView):
         }
         return response.Response(stats)
         
-class NumberViewset(BaseNumberMixin, BaseAuthenticationPermission, viewsets.ModelViewSet):
+class NumberViewset(BaseAuthenticationPermission, viewsets.ModelViewSet):
+    queryset = Number.objects.all()
+    serializer_class = NumberSerializer
+
     lookup_field = 'date'
     pagination_class = NumberPageNumberPagination
     filter_backends = [DjangoFilterBackend]
