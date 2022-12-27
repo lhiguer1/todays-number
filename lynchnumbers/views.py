@@ -5,7 +5,6 @@ from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (
     response,
-    reverse,
     views,
     viewsets,
 )
@@ -13,6 +12,7 @@ from .filters import NumberFilterSet
 from .mixins import BaseAuthenticationPermission
 from .models import Number
 from .pagination import NumberPageNumberPagination
+from .serializers import NumberSerializer
 
 
 class StatisticsView(views.APIView):
@@ -20,10 +20,12 @@ class StatisticsView(views.APIView):
         qs:QuerySet = Number.objects.all()
 
         def last_picked(number) -> dict:
-            d:datetime.date = qs.filter(number=number).latest('date').date
+            d:datetime.date = qs.filter(number=number).latest('date')
+            serializer = NumberSerializer(d, context={'request': request})
+
             return {
-                'date': d,
-                'detail': reverse.reverse('number-detail', kwargs={'date': d}, request=request)
+                'date': serializer.data['date'],
+                'detail': serializer.data['detail']
             }
 
         sequence = qs.values_list('number', flat=True)
