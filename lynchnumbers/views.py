@@ -4,12 +4,13 @@ import collections
 from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (
+    authentication,
+    permissions,
     response,
     views,
     viewsets,
 )
 from .filters import NumberFilterSet
-from .mixins import BaseAuthenticationPermission
 from .models import Number
 from .pagination import NumberPageNumberPagination
 from .serializers import NumberSerializer
@@ -43,7 +44,10 @@ class StatisticsView(views.APIView):
         }
         return response.Response(stats)
         
-class NumberViewset(BaseAuthenticationPermission, viewsets.ModelViewSet):
+class NumberViewset(viewsets.ModelViewSet):
+    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+
     queryset = Number.objects.all()
     serializer_class = NumberSerializer
 
