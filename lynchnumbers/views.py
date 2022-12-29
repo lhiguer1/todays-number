@@ -51,7 +51,6 @@ class NumberViewset(viewsets.ModelViewSet):
     queryset = Number.objects.all()
     serializer_class = NumberSerializer
 
-    lookup_field = 'date'
     pagination_class = NumberPageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = NumberFilterSet
