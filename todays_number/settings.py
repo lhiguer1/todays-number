@@ -33,10 +33,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG') == 'True'
 
-if IS_HEROKU:
-    ALLOWED_HOSTS = ['*']
-else:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*'] if IS_HEROKU else []
 
 
 # Application definition
@@ -92,15 +89,13 @@ WSGI_APPLICATION = 'todays_number.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-if 'DATABASE_URL' in os.environ:
-    DATABASES = {'default': dj_database_url.config(conn_max_age=600, conn_health_checks=True, ssl_require=IS_HEROKU)}
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+db_options = {
+    'default': 'sqlite:///{}'.format(BASE_DIR/'db.sqlite3'),
+    'conn_max_age': 600,
+    'conn_health_checks': True,
+    'ssl_require': IS_HEROKU,
+}
+DATABASES = {'default': dj_database_url.config(**db_options)}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
