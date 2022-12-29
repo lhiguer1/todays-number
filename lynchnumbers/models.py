@@ -1,5 +1,4 @@
 from django.db import models
-from django.urls import reverse
 from django.core.validators import (
     MaxValueValidator,
     MinValueValidator,
@@ -18,7 +17,3 @@ class Number(models.Model):
     
     def __str__(self):
         return self.date.isoformat()
-
-    def get_absolute_url(self):
-        return reverse('number-detail', kwargs={'date' : self.date})
-        
