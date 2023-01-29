@@ -1,0 +1,41 @@
+{% extends 'lynchnumbers/base/section.html' %}
+
+{% block section_header %}About{% endblock section_header %}
+
+{% block articles %}
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Who</h4></header>
+        <div class="card-body">
+            <p class="card-text">David Lynch is an American filmmaker, visual artist, and actor.</p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">What</h4></header>
+        <div class="card-body">
+            <p class="card-text">API endpoints to get the number of any given day according to the David Lynch series, <a class="link-secondary" href="https://www.youtube.com/@DAVIDLYNCHTHEATER">David Lynch Theater Presents: TODAY'S NUMBER IS...</a> where each day he picks a random number from 1 to 10 using a jar containing ten numbered ping-pong balls.</p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">How</h4></header>
+        <div class="card-body">
+            <p class="card-text">Each video in the series is ran through the Google Speech Recognition API. The transcript of the video is processed to extract the date and number. All the info is added to a database.</p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Why</h4></header>
+        <div class="card-body">
+            <p class="card-text">It's cool.</p>
+        </div>
+    </div>
+</article>
+{% endblock articles %}

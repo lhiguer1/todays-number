@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Todays Number API</title>
+    {% include 'lynchnumbers/base/js.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'lynchnumbers/css/style.css' %}"/>
+</head>
+
+<body>
+    {% include 'lynchnumbers/base/header.html' %}
+    <main>
+        {% block main%}{% endblock main%}
+        {% block scripts %}{% endblock scripts %}
+    </main>
+    {% include 'lynchnumbers/base/footer.html' %}
+
+</body>
+
+</html>

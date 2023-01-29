@@ -24,5 +24,5 @@ urlpatterns = [
     path('ping/', views.PingAPIView.as_view(), name='ping'),
     path('auth/', ObtainAuthToken.as_view(), name='token'),
     path('admin/', admin.site.urls, name='admin'),
-    path('api/', include('lynchnumbers.urls'), name='api'),
+    path('', include('lynchnumbers.urls'), name='lynchnumbers'),
 ]
