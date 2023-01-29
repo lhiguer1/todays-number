@@ -1,0 +1,11 @@
+{% extends 'lynchnumbers/base/base.html' %}
+
+{% block main %}
+<section class="d-flex flex-column gap-3">
+    <header class="container">
+        <h2 class="text-center">{% block section_header %}{% endblock section_header %}</h2>
+    </header>
+
+    {% block articles %}{% endblock articles %}
+</section>
+{% endblock main %}

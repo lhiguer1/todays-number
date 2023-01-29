@@ -1,0 +1,69 @@
+{% extends 'lynchnumbers/base/section.html' %}
+
+
+{% block section_header %}Documentation{% endblock section_header %}
+
+{% block articles %}
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Base URL</h4></header>
+        {% url 'home' as base_url %}
+        <div class="card-body">
+            <p class="card-text"><a class="link-secondary" href="{{ base_url }}">{{ base_url }}</a></p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Statistics</h4></header>
+        {% url 'statistics' as statistics_url %}
+        <div class="card-body">
+            <p class="card-text">Some fun facts and figures.</p>
+            <p class="card-text"><a class="link-secondary" href="{{ statistics_url }}">{{ statistics_url }}</a></p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Number List</h4></header>
+        {% url 'number-list' as number_list_url %}
+        <div class="card-body">
+            <p class="card-text"><a class="link-secondary" href="{{ number_list_url }}">{{ number_list_url }}</a></p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Number Detail</h4></header>
+        <div class="card-body">
+            <p class="card-text">You can retrieve specific numbers.</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a class="link-secondary" href="{% url 'number-detail' '2020-08-17' %}">{% url 'number-detail' '2020-08-17'%}</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{% url 'number-detail' '2020-08-18' %}">{% url 'number-detail' '2020-08-18'%}</a></li>
+            </ul>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Filtering</h4></header>
+        <div class="card-body">
+            <p class="card-text">Filter via query parameters.</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0);"/>?date_range=today</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=yesterday</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=week</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=month</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=year</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_after=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_before=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_after=2021-01-01&date_before=2021-02-01</a></li>
+            </ul>
+        </div>
+    </div>
+</article>
+{% endblock articles %}

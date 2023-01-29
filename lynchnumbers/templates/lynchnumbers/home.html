@@ -1,0 +1,69 @@
+{% extends 'lynchnumbers/base/section.html' %}
+
+
+{% block section_header %}Home{% endblock section_header %}
+
+{% block articles %}
+<article id="sequence" class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Sequence</h4></header>
+        <div class="card-body">
+            <p class="card-text">{{ statistics.sequence|join:', '}}</p>
+        </div>
+    </div>
+</article>
+
+<article id="statistics" class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Statistics</h4></header>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Count: {{ statistics.count }}</li>
+                <li class="list-group-item">Sum: {{ statistics.sum }}</li>
+                <li class="list-group-item">Median: {{ statistics.median }}</li>
+                <li class="list-group-item">Mean: {{ statistics.mean }}</li>
+                <li class="list-group-item">Mode: {{ statistics.mode }}</li>
+                <li class="list-group-item">Variance: {{ statistics.variance }}</li>
+                <li class="list-group-item">Standard Deviation: {{ statistics.standard_deviation }}</li>
+            </ul>
+        </div>
+    </div>
+</article>
+
+<article id="frequencies" class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Frequencies</h4></header>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                {% for number, freq in statistics.frequency.items|dictsort:0 %} 
+                <li class="list-group-item">{{ number }}: {{ freq }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</article>
+
+<article id="lastPicked" class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Last Picked</h4></header>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Number</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for number, info in statistics.last_picked.items|dictsort:0 %}
+                    <tr>
+                        <td scope="row">{{ number }}</td>
+                        <td><a class="link-secondary" href={{ info.detail }}>{{ info.date }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>
+{% endblock articles %}
