@@ -14,7 +14,7 @@ from rest_framework import (
 from .filters import NumberFilterSet
 from .models import Number
 from .pagination import NumberPageNumberPagination
-from .serializers import NumberSerializer
+from .serializers import NumberSerializer, NumberUpdateSerializer
 
 def _get_statistics(request=None):
     qs:QuerySet = Number.objects.all()
@@ -52,11 +52,16 @@ class NumberViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
     queryset = Number.objects.all()
-    serializer_class = NumberSerializer
 
     pagination_class = NumberPageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = NumberFilterSet
+
+    def get_serializer_class(self):
+        if self.action in ('update', 'partial_update'):
+            return NumberUpdateSerializer
+        else:
+            return NumberSerializer
 
 class HomeView(TemplateView):
     template_name = 'lynchnumbers/home.html'
