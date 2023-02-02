@@ -11,6 +11,14 @@ class NumberAdmin(admin.ModelAdmin):
     ]
     list_display = ['date', 'number', 'url']
     list_filter = ['date']
-    readonly_fields = ['date']
+
+    def get_readonly_fields(self, request, obj=None):
+        rofields = super().get_readonly_fields(request, obj)
+        if obj:
+            rofields += ('date',)
+        return rofields
+
+
+
 
 admin.site.register(Number, NumberAdmin)
