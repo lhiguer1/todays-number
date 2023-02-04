@@ -4,10 +4,10 @@ from rest_framework import serializers
 class NumberSerializer(serializers.HyperlinkedModelSerializer):
     url_field_name = 'detail'
 
-    date = serializers.DateField()
-    number = serializers.IntegerField(min_value=1, max_value=10)
-    url = serializers.URLField(allow_blank=False)
-    transcript = serializers.CharField(allow_blank=False, trim_whitespace=True)
+    date = serializers.DateField(required=True)
+    number = serializers.IntegerField(required=True, min_value=1, max_value=10)
+    yt_video_id = serializers.RegexField(regex='^[\w\-]{11}$', label="YouTube Video ID", required=True, allow_blank=False, )
+    yt_video_transcript = serializers.CharField(label="YouTube Video Transcript", required=True, allow_blank=False, trim_whitespace=True)
 
     class Meta:
         model = Number
@@ -15,8 +15,8 @@ class NumberSerializer(serializers.HyperlinkedModelSerializer):
             'date',
             'number',
             'detail',
-            'url',
-            'transcript',
+            'yt_video_id',
+            'yt_video_transcript',
         )
 
 class NumberUpdateSerializer(NumberSerializer):
@@ -25,6 +25,6 @@ class NumberUpdateSerializer(NumberSerializer):
         fields = (
             'number',
             'detail',
-            'url',
-            'transcript',
+            'yt_video_id',
+            'yt_video_transcript',
         )

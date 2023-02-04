@@ -6,10 +6,10 @@ class NumberAdmin(admin.ModelAdmin):
     fields = [
         'date',
         'number',
-        'url',
-        'transcript',
+        'yt_video_id',
+        'yt_video_transcript',
     ]
-    list_display = ['date', 'number', 'url']
+    list_display = ['date', 'number', 'yt_video_id']
     list_filter = ['date']
 
     def get_readonly_fields(self, request, obj=None):
