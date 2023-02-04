@@ -9,7 +9,7 @@ class NumberAdmin(admin.ModelAdmin):
         'yt_video_id',
         'yt_video_transcript',
     ]
-    list_display = ['date', 'number', 'yt_video_id']
+    list_display = ['date', 'number', 'yt_video_url']
     list_filter = ['date']
 
     def get_readonly_fields(self, request, obj=None):

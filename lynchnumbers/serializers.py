@@ -16,6 +16,7 @@ class NumberSerializer(serializers.HyperlinkedModelSerializer):
             'number',
             'detail',
             'yt_video_id',
+            'yt_video_url',
             'yt_video_transcript',
         )
 
