@@ -23,3 +23,19 @@ class Number(models.Model):
     @property
     def yt_video_url(self):
         return 'https://youtu.be/{}'.format(self.yt_video_id)
+
+
+class LynchVideo(models.Model):
+    video = models.FileField(upload_to='lynchvideos')
+
+
+class LynchVideoInfo(models.Model):
+    videoId = models.CharField(null=True, blank=True, unique=True, max_length=11, validators=[RegexValidator(regex=r'^[\w\-]{11}$')])
+    publishedAt = models.DateField(null=True, blank=True)
+    transcript = models.TextField(null=True, blank=True)
+    number = models.PositiveSmallIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
+    video = models.OneToOneField(LynchVideo, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['publishedAt']
+        get_latest_by = 'publishedAt'

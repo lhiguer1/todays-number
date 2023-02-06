@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Number
+from .models import Number, LynchVideo, LynchVideoInfo
 
 # Register your models here.
 class NumberAdmin(admin.ModelAdmin):
@@ -20,6 +20,21 @@ class NumberAdmin(admin.ModelAdmin):
         return rofields
 
 
+class LynchVideoAdmin(admin.ModelAdmin):
+    fields = [
+        'video',
+    ]
 
+
+class LynchVideoInfoAdmin(admin.ModelAdmin):
+    fields = [
+        'videoId',
+        'publishedAt',
+        'transcript',
+        'number',
+        'lynchVideoId',
+    ]
 
 admin.site.register(Number, NumberAdmin)
+admin.site.register(LynchVideo, LynchVideoAdmin)
+admin.site.register(LynchVideoInfo, LynchVideoInfoAdmin)
