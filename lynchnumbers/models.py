@@ -11,6 +11,7 @@ class Number(models.Model):
 
     yt_video_id = models.CharField(verbose_name='YouTube Video ID', blank=False, max_length=11, validators=[RegexValidator(regex=r'^[\w\-]{11}$')])
     yt_video_transcript = models.TextField(verbose_name='YouTube Video Transcript', blank=False)
+    yt_video = models.FileField("YouTube Video", upload_to='lynchvideos')
 
     class Meta:
         ordering = ['date']

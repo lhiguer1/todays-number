@@ -18,6 +18,7 @@ class NumberSerializer(serializers.HyperlinkedModelSerializer):
             'yt_video_id',
             'yt_video_url',
             'yt_video_transcript',
+            'yt_video',
         )
 
 class NumberUpdateSerializer(NumberSerializer):
@@ -28,4 +29,5 @@ class NumberUpdateSerializer(NumberSerializer):
             'detail',
             'yt_video_id',
             'yt_video_transcript',
+            'yt_video',
         )

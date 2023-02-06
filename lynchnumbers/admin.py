@@ -8,6 +8,7 @@ class NumberAdmin(admin.ModelAdmin):
         'number',
         'yt_video_id',
         'yt_video_transcript',
+        'yt_video',
     ]
     list_display = ['date', 'number', 'yt_video_url']
     list_filter = ['date']
