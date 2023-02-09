@@ -1,5 +1,9 @@
-from .models import Number
 from rest_framework import serializers
+from .models import (
+    Number,
+    LynchVideo,
+    LynchVideoInfo,
+)
 
 class NumberSerializer(serializers.HyperlinkedModelSerializer):
     url_field_name = 'detail'
@@ -30,4 +34,27 @@ class NumberUpdateSerializer(NumberSerializer):
             'yt_video_id',
             'yt_video_transcript',
             'yt_video',
+        )
+
+class LynchVideoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = LynchVideo
+        fields = (
+            'url',
+            'video',
+        )
+
+
+class LynchVideoInfoSerializer(serializers.HyperlinkedModelSerializer):
+    video = LynchVideoSerializer(read_only=True)
+    class Meta:
+        model = LynchVideoInfo
+        fields = (
+            'url',
+            'videoURL',
+            'videoId',
+            'publishedAt',
+            'transcript',
+            'number',
+            'video',
         )

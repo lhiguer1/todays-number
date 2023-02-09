@@ -1,12 +1,21 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import StatisticsView, NumberViewset, HomeView, AboutView, DocumentationView
+from .views import (
+    StatisticsView,
+    NumberViewset,
+    LynchVideoViewSet,
+    LynchVideoInfoViewSet,
+    HomeView,
+    AboutView,
+    DocumentationView,
+)
 
 
 router = routers.DefaultRouter()
-router.include_root_view = False
 
 router.register(r'numbers', NumberViewset, basename='number')
+router.register(r'lynchvideos', LynchVideoViewSet)
+router.register(r'lynchvideoinfo', LynchVideoInfoViewSet)
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),

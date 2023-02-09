@@ -39,3 +39,7 @@ class LynchVideoInfo(models.Model):
     class Meta:
         ordering = ['publishedAt']
         get_latest_by = 'publishedAt'
+
+    @property
+    def videoURL(self):
+        return 'https://youtu.be/{}'.format(self.videoId)

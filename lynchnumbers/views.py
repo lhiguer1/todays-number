@@ -11,10 +11,15 @@ from rest_framework import (
     views,
     viewsets,
 )
-from .filters import NumberFilterSet
-from .models import Number
-from .pagination import NumberPageNumberPagination
-from .serializers import NumberSerializer, NumberUpdateSerializer
+from .filters import NumberFilterSet, LynchVideoInfoFilterSet
+from .models import Number, LynchVideo, LynchVideoInfo
+from .pagination import BasePageNumberPagination
+from .serializers import (
+    NumberSerializer,
+    NumberUpdateSerializer,
+    LynchVideoSerializer,
+    LynchVideoInfoSerializer,
+)
 
 def _get_statistics(request=None):
     qs:QuerySet = Number.objects.all()
@@ -53,7 +58,7 @@ class NumberViewset(viewsets.ModelViewSet):
 
     queryset = Number.objects.all()
 
-    pagination_class = NumberPageNumberPagination
+    pagination_class = BasePageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = NumberFilterSet
 
@@ -76,3 +81,26 @@ class AboutView(TemplateView):
 
 class DocumentationView(TemplateView):
     template_name = 'lynchnumbers/documentation.html'
+
+
+class LynchVideoViewSet(viewsets.ModelViewSet):
+    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    queryset = LynchVideo.objects.all()
+    serializer_class = LynchVideoSerializer
+    pagination_class = BasePageNumberPagination
+
+    def perform_create(self, serializer):
+        """Create a corresponding LynchVideoInfo instance"""
+        # currently not implemented, for now just perform save
+        return super().perform_create(serializer)
+
+class LynchVideoInfoViewSet(viewsets.ModelViewSet):
+    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    queryset = LynchVideoInfo.objects.all()
+    serializer_class = LynchVideoInfoSerializer
+    pagination_class = BasePageNumberPagination
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = LynchVideoInfoFilterSet
