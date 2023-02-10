@@ -22,15 +22,15 @@ from .serializers import (
 )
 
 def _get_statistics(request=None):
-    qs:QuerySet = Number.objects.all()
+    qs:QuerySet = LynchVideoInfo.objects.all()
 
     def last_picked(number) -> dict:
-        d:datetime.date = qs.filter(number=number).latest('date')
-        serializer = NumberSerializer(d, context={'request': request})
+        d:datetime.date = qs.filter(number=number).latest()
+        serializer = LynchVideoInfoSerializer(d, context={'request': request})
 
         return {
-            'date': serializer.data['date'],
-            'detail': serializer.data['detail']
+            'publishedAt': serializer.data['publishedAt'],
+            'url': serializer.data['url']
         }
 
     sequence = qs.values_list('number', flat=True)

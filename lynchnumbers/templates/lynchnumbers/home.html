@@ -58,7 +58,7 @@
                     {% for number, info in statistics.last_picked.items|dictsort:0 %}
                     <tr>
                         <td scope="row">{{ number }}</td>
-                        <td><a class="link-secondary" href={{ info.detail }}>{{ info.date }}</a></td>
+                        <td><a class="link-secondary" href={{ info.url }}>{{ info.publishedAt}}</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
