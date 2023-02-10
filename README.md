@@ -1,55 +1,92 @@
-# Today's Number
+# Today's Number API
 Here we go for today's number. Ten balls; each ball has a number; numbers one through ten. Swirl the numbers. Pick a number. Today's number is...
 
-## Number Attributes
-| Attribute  | Type   | Description                                         | 
-| :--------  | :----- | :-------------------------------------------------- |
-| date       | string | Date in ISO 8601 format                             |
-| number     | int    | Number of the day                                   |
-| url        | string | URL of video                                        |
-| transcript | string | Transcript obtained using Google Speech Recognition | 
+## Base URL
+`/`
 
-### Base URL
-`https://todays-number.herokuapp.com/api/numbers/`
+## API Root
+`/api/`
 
-### Query qarameters
-Filter list by `today`, `yesterday`, `week`, `month`, `year`<br>
-`/api/numbers/?date_range={today,yesterday,week,month,year}`
+## Statistics
+`/api/statistics/`
 
-Get list of dates before/after specified date<br>
-`/api/numbers/?date_after=2020-08-16`<br>
-`/api/numbers/?date_before=2022-12-01`<br>
-`/api/numbers/?date_after=2021-01-01&date_before=2021-02-01`
+## Schema
+![schema](image/README/schema.png)
 
-### Examples
-#### List
-`/api/numbers/`
-```json
-[
-  {
-    "date": "2020-08-17",
-    "number": 8,
-    "url": "https://youtu.be/W-3MP27IU-I",
-    "transcript": "here we go for today's n…ain today's number is 8"
-  },
-  {
-    "date": "2020-08-18",
-    "number": 3,
-    "url": "https://youtu.be/c9jFcIwEQ3k",
-    "transcript": "here we go for today's n…ber today's number is 3"
-  }
-]
-```
+## Lynch Video
+`/api/lynchvideos/`
 
-#### detail
-`/api/numbers/2020-08-17`
+### Response
 ```json
 {
-  "date": "2020-08-17",
-  "number": 8,
-  "url": "https://youtu.be/W-3MP27IU-I",
-  "transcript": "here we go for today's n…ain today's number is 8"
+    "count": 853,
+    "next": "http://127.0.0.1:8000/api/lynchvideos/?page=2&page_size=2",
+    "previous": null,
+    "results": [
+        {
+            "url": "",
+            "video": ""
+        },
+        {
+            "url": "",
+            "video": ""
+        }
+    ]
 }
 ```
-#### Statistics
-`/api/statistics/`
+
+## Lynch Video Info
+`/api/lynchvideoinfo/`
+
+### Filtering
+Filter list by `today`, `yesterday`, `week`, `month`, or `year`
+```
+/api/numbers/?publishedRange={today,yesterday,week,month,year}
+```
+
+Get list of dates before/after specified date
+```
+/api/lynchvideoinfo?publishedAt=2020-08-16
+/api/lynchvideoinfo?publishedAfter=2020-08-16
+/api/lynchvideoinfo?publishedBefore=2020-08-16
+/api/lynchvideoinfo?publishedAfter=2021-01-01&publishedBefore=2021-02-01
+/api/lynchvideoinfo?publishedRange=today
+/api/lynchvideoinfo?publishedRange=yesterday
+/api/lynchvideoinfo?publishedRange=week
+/api/lynchvideoinfo?publishedRange=month
+/api/lynchvideoinfo?publishedRange=year
+```
+### Response
+```json
+{
+    "count": 853,
+    "next": "http://127.0.0.1:8000/api/lynchvideoinfo/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "url": "",
+            "videoURL": "",
+            "videoId": "",
+            "publishedAt": "2020-08-16",
+            "transcript": "",
+            "number": 8,
+            "video": {
+                "url": "",
+                "video": ""
+            }
+        },
+        {
+            "url": "",
+            "videoURL": "",
+            "videoId": "",
+            "publishedAt": "2020-08-17",
+            "transcript": "",
+            "number": 8,
+            "video": {
+                "url": "",
+                "video": ""
+            }
+        },
+    ]
+}
+```

@@ -16,6 +16,16 @@
 
 <article class="container">
     <div class="card">
+        <header class="card-header"><h4 class="my-0">API Root</h4></header>
+        {% url 'api-root' as api_root %}
+        <div class="card-body">
+            <p class="card-text"><a class="link-secondary" href="{{ api_root }}">{{ api_root }}</a></p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
         <header class="card-header"><h4 class="my-0">Statistics</h4></header>
         {% url 'statistics' as statistics_url %}
         <div class="card-body">
@@ -24,6 +34,8 @@
         </div>
     </div>
 </article>
+
+<div class="container"><hr class="border-5"></div>
 
 <article class="container">
     <div class="card">
@@ -54,16 +66,50 @@
         <div class="card-body">
             <p class="card-text">Filter via query parameters.</p>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0);"/>?date_range=today</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=yesterday</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=week</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=month</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_range=year</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_after=2020-08-16</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_before=2020-08-16</a></li>
-                <li class="list-group-item"><a class="link-secondary" href="javascript:void(0)"/>?date_after=2021-01-01&date_before=2021-02-01</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_range=today</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_range=yesterday</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_range=week</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_range=month</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_range=year</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_after=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_before=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary">?date_after=2021-01-01&date_before=2021-02-01</a></li>
             </ul>
         </div>
     </div>
 </article>
+
+<div class="container"><hr class="border-5"></div>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Lynch Video Info List</h4></header>
+        {% url 'lynchvideoinfo-list' as lynchvideoinfo_list %}
+        <div class="card-body">
+            <p class="card-text"><a class="link-secondary" href="{{ lynchvideoinfo_list }}">{{ lynchvideoinfo_list }}</a></p>
+        </div>
+    </div>
+</article>
+
+<article class="container">
+    <div class="card">
+        <header class="card-header"><h4 class="my-0">Filtering</h4></header>
+        <div class="card-body">
+            <p class="card-text">Filter via query parameters.</p>
+            {% url 'lynchvideoinfo-list' as lynchvideoinfo_list %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedAt=2020-08-16">?publishedAt=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedAfter=2020-08-16">?publishedAfter=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedBefore=2020-08-16">?publishedBefore=2020-08-16</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedAfter=2021-01-01&publishedBefore=2021-02-01">?publishedAfter=2021-01-01&publishedBefore=2021-02-01</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedRange=today">?publishedRange=today</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedRange=yesterday">?publishedRange=yesterday</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedRange=week">?publishedRange=week</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedRange=month">?publishedRange=month</a></li>
+                <li class="list-group-item"><a class="link-secondary" href="{{ lynchvideoinfo_list }}?publishedRange=year">?publishedRange=year</a></li>
+            </ul>
+        </div>
+    </div>
+</article>
+
 {% endblock articles %}
